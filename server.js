@@ -6,6 +6,7 @@
  */
 var express = require("express");
 var bodyParser = require("body-parser");
+var _ = require("underscore");
 
 var app = express();
 var PORT = process.env.PORT || 3000;
@@ -24,7 +25,7 @@ app.get("/", function(req, res) {
 /**
  * Get all todos
  */
-app.get("/todos", function(req, res) {
+app.get("/todos", function(req, res) {      
    
    res.json(todos); 
 });
@@ -84,7 +85,7 @@ function getAll() {
  */
 function findById(id) {
     
-    var todo = null;
+    var todo = null;            
     
     todos.forEach(function(t) {
         if (t.id == id) {
