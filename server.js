@@ -35,8 +35,7 @@ app.get("/todos", function(req, res) {
  */
 app.get("/todos/:id", function(req, res) {
     
-    var id = parseInt(req.params.id, 10);
-    var todo = findById(id);        
+    var todo = _.findWhere(todos, {id: parseInt(req.params.id, 10)});        
     
     if (todo) {
         res.json(todo);
@@ -51,11 +50,12 @@ app.post("/todos", function(req, res) {
    
     var todo = req.body;
     
-    if (todo) {
-        save(todo);
-        res.status(201).send();
-    } else
-        res.status(406).send();    
+    if (!isValidTodo(todo))
+        return res.status(400).send("Invalid todo object");        
+    
+    save(todo);
+    
+    res.status(201).send();    
 });
 
 /**
@@ -81,20 +81,15 @@ function getAll() {
 };
 
 /**
- * Find and return a todo by id
+ * Check if todo is valid
  */
-function findById(id) {
+function isValidTodo(todo) {
     
-    var todo = null;            
+    var isTodoObject = (_.isString(todo.description) && _.isBoolean(todo.done));
+    var hasDescription = (isTodoObject && todo.description.trim().length > 0);
+    var isValid = (isTodoObject && hasDescription);
     
-    todos.forEach(function(t) {
-        if (t.id == id) {
-            todo = t;
-            return;   
-        }                
-    });
-    
-    return todo;
+    return isValid;
 };
 
 /**
@@ -102,7 +97,7 @@ function findById(id) {
  */
 function save(todo) {
     
-    var id = todos.length;
+    var id = todos.length;   
     
     if (id == 0) {
         id = 1;
@@ -110,7 +105,8 @@ function save(todo) {
         id++;
     
     todo.id = id;
-          
-    todos.push(todo);
     
+    todo = _.pick(todo, "id", "description", "done");
+              
+    todos.push(todo);    
 };
