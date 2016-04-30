@@ -51,7 +51,7 @@ app.post("/todos", function(req, res) {
     var todo = req.body;
     
     if (!isValidTodo(todo))
-        return res.status(400).send("Invalid todo object");        
+        return res.status(400).send();        
     
     save(todo);
     
@@ -68,6 +68,29 @@ app.delete("/todos/:id", function(req, res) {
     if (todo) {
         todos = _.reject(todos, function(t) {
             return t.id == todo.id;
+        });
+        res.status(200).send();
+    } else
+        res.status(404).send();
+});
+
+/**
+ * Update a todo
+ */
+app.put("/todos", function(req, res) {
+    
+    if (!isValidPutRequest(req))
+        res.status(400).send(); 
+      
+    var todo = findById(req.body.id);        
+    
+    if (todo) {
+        var updatedTodo = _.extend(todo, req.body);
+        todos.forEach(function(t) {
+            if (t.id == updatedTodo.id) {
+                 t = updatedTodo;
+                 return;
+            }                 
         });
         res.status(200).send();
     } else
@@ -105,6 +128,14 @@ function findByRequestId(req) {
 };
 
 /**
+ * Return a todo by its id
+ */
+function findById(id) {
+  
+    return _.findWhere(todos, {id: id});
+};
+
+/**
  * Check if todo is valid
  */
 function isValidTodo(todo) {
@@ -133,4 +164,16 @@ function save(todo) {
     todo = _.pick(todo, "id", "description", "done");
               
     todos.push(todo);    
+};
+
+/**
+ * Check if the PUT request body is valid
+ */
+function isValidPutRequest(req) {
+    
+    var body = _.pick(req.body, "description", "completed");
+        
+    //TODO implement this ...
+    
+    return true;
 };
