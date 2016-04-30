@@ -13,6 +13,24 @@ app.get("/todos", function(req, res) {
    res.json(todos); 
 });
 
+app.get("/todos/:id", function(req, res) {
+    
+    var id = parseInt(req.params.id, 10);
+    var todo = null;
+    
+    todos.forEach(function(t) {
+        if (t.id == id) {
+            todo = t;
+            return;   
+        }                
+    });
+    
+    if (todo) {
+        res.json(todo);
+    } else
+        res.status(404).send();                 
+});
+
 app.listen(PORT, function() {     
     
    console.log("Server is up and running!");
