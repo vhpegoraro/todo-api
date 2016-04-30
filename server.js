@@ -35,7 +35,7 @@ app.get("/todos", function(req, res) {
  */
 app.get("/todos/:id", function(req, res) {
     
-    var todo = _.findWhere(todos, {id: parseInt(req.params.id, 10)});        
+    var todo = findByRequestId(req);        
     
     if (todo) {
         res.json(todo);
@@ -55,7 +55,23 @@ app.post("/todos", function(req, res) {
     
     save(todo);
     
-    res.status(201).send();    
+    res.status(200).send();    
+});
+
+/**
+ * Delete a todo
+ */
+app.delete("/todos/:id", function(req, res) {
+      
+    var todo = findByRequestId(req);        
+    
+    if (todo) {
+        todos = _.reject(todos, function(t) {
+            return t.id == todo.id;
+        });
+        res.status(200).send();
+    } else
+        res.status(404).send();
 });
 
 /**
@@ -78,6 +94,14 @@ function getAll() {
     var todos = [todo1, todo2, todo3];
     
     return todos;
+};
+
+/**
+ * Return a todo by its request id
+ */
+function findByRequestId(req) {
+  
+    return _.findWhere(todos, {id: parseInt(req.params.id, 10)});
 };
 
 /**
