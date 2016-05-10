@@ -1,3 +1,4 @@
+var requireAuth = require(".././middlewares/require-auth");
 var Todo = require(".././models/todo");
 
 module.exports = function(app) {
@@ -5,7 +6,7 @@ module.exports = function(app) {
     /**
      * Get all todos
      */
-    app.get("/todos", function(req, res) {      
+    app.get("/todos", requireAuth, function(req, res) {      
     
         Todo.find({}, function(err, todos) {
             

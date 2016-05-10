@@ -11,6 +11,7 @@ var _ = require("underscore");
 var express = require("express");
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
+var userRouter = require("./routes/user");
 var todoRouter = require("./routes/todos");
 
 var app = express();
@@ -25,6 +26,7 @@ db.once("open", function() {
     console.log("MongoDB connected!");
 });
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 /**
@@ -36,8 +38,9 @@ app.get("/", function(req, res) {
 });
 
 /**
- * Add TODO Routes
+ * Add Routes
  */
+userRouter(app);
 todoRouter(app);
 
 /**
