@@ -12,7 +12,6 @@ module.exports = function(req, res, next) {
     try {
         
         var decoded = jwt.decode(token, secret);
-        console.log(decoded);
         
         if (decoded.exp <= Date.now()) {
             res.json(400, {error: 'Token expired'});
@@ -24,8 +23,6 @@ module.exports = function(req, res, next) {
                 return res.status(500).json(error);
             
             req.user = user;
-            
-            console.log("Found user: "+user);
             
             return next();            
         });

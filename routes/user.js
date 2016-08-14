@@ -19,8 +19,7 @@ module.exports = function(app) {
         newUser.save(function(error) {
         
             if (error) {
-                console.log(error);
-                res.status(400).send();
+                res.status(400).send(error);
                 return;
             }                  
             
